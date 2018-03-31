@@ -58,7 +58,7 @@ public class HerniPlan extends Observable {
         mapaMistnosti.put(kuchyne.nazev, kuchyne);
         
         //vytváříme postavy
-        Postava pritelkyne = new Postava (this, "Přítelkyně", "Toto je tvoje krásná přítelkyně", "Chceš vedět, kde jsi včera nechal mobil co? Myslím, že to vím, ale neřeknu ti to, dokud nemeješ nádobí!", "Super. Naposled jsem tě s tím telefonem viděla jít na záchod. Možná ti tam spadl, můžeš ho vytáhnout tím gumovým zvonem co je v koupelně");
+        Postava pritelkyne = new Postava (this, "Přítelkyně", "Toto je tvoje krásná přítelkyně", "Chceš vedět, kde jsi včera nechal mobil co? Myslím, že to vím, ale neřeknu ti to, dokud nemeješ nádobí!", "Super. Naposled jsem tě s tím telefonem viděla jít na záchod. Možná ti tam spadl, můžeš ho vytáhnout tím gumovým zvonem co je v koupelně","pritelkyne.jpg");
 
         // přiřazují se průchody mezi prostory (sousedící prostory)
         loznice.setVychod(hala);

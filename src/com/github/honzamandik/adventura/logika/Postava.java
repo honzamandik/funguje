@@ -21,6 +21,7 @@ public class Postava
     private String popis;
     private String mluveni;
     private String spcmluveni;
+    private String obrazek;
     private HerniPlan hPlan;
     
         
@@ -34,12 +35,13 @@ public class Postava
      * @param   spcmluveni  Co postava řekne v případě, že byla provedena specifická činnost
      
      */
-    public Postava (HerniPlan hPlan, String jmeno, String popis, String mluveni, String spcmluveni) {
+    public Postava (HerniPlan hPlan, String jmeno, String popis, String mluveni, String spcmluveni, String obrazek) {
         this.jmeno = jmeno;
         this.popis = popis;
         this.mluveni = mluveni;
         this.spcmluveni = spcmluveni;
         this.hPlan = hPlan;
+        this.obrazek = obrazek;
         
         
     }
@@ -81,6 +83,10 @@ public class Postava
      */
     public String getPopis() {
         return popis;
+    }
+    
+    public String getObrazek() {
+        return obrazek;
     }
     
         

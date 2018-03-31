@@ -1,6 +1,8 @@
 package com.github.honzamandik.adventura.main;
 
 import com.github.honzamandik.adventura.logika.Hra;
+import com.github.honzamandik.adventura.logika.Postava;
+
 import java.util.Observable;
 import java.util.Observer;
 
@@ -26,10 +28,9 @@ import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 
 /**
- * Kontroler, kterÃ½ zprostÅ™edkovÃ¡vÃ¡ komunikaci mezi grafikou
- * a logikou adventury
+ * Kontroler pro implementaci grafiky
  * 
- * @author Filip Vencovsky
+ * @author Jan Mandik
  *
  */
 public class HomeController extends GridPane implements Observer, Initializable {
@@ -40,6 +41,7 @@ public class HomeController extends GridPane implements Observer, Initializable 
         @FXML private ListView<Object> seznamVeciBatoh = new ListView<>();
 	@FXML private ListView<Object> seznamVychodu = new ListView<>();
 	@FXML private ListView<Object> seznamVeciPouziti = new ListView<>();
+	@FXML private ListView<Object> seznamLidi = new ListView<>();
 	@FXML private ImageView uzivatel;
 	
 	private Hra hra;
@@ -47,10 +49,10 @@ public class HomeController extends GridPane implements Observer, Initializable 
         private ObservableList<Object> veciBatoh = FXCollections.observableArrayList();
         private ObservableList<Object> vychody = FXCollections.observableArrayList();
         private ObservableList<Object> veciPouziti = FXCollections.observableArrayList();
+        private ObservableList<Object> lidi = FXCollections.observableArrayList();
 	
 	/**
-	 * metoda Ä�te pÅ™Ã­kaz ze vstupnÃ­ho textovÃ©ho pole
-	 * a zpracuje ho
+	 * metoda bere a zpracovává příkaz z okna
 	 */
 	@FXML public void odesliPrikaz() 
         {
@@ -67,9 +69,8 @@ public class HomeController extends GridPane implements Observer, Initializable 
 	}
 	
 	/**
-	 * Metoda bude souÅ¾it pro pÅ™edÃ¡nÃ­ objektu se spuÅ¡tÄ›nou hrou
-	 * kontroleru a zobrazÃ­ stav hry v grafice.
-	 * @param objekt spuÅ¡tÄ›nÃ© hry
+	 * Metoda předává spuštěnou hru kontroleru a vykresluje grafiku
+	 * @param objekt spuštěné hry
 	 */
 	@Override
         public void initialize(URL url, ResourceBundle rb)  
@@ -81,12 +82,19 @@ public class HomeController extends GridPane implements Observer, Initializable 
                 
                 seznamVeciMistnost.setItems(veciMistnost);
                 seznamVeciBatoh.setItems(veciBatoh);
+                seznamVeciPouziti.setItems(veciPouziti);
+                seznamLidi.setItems(lidi);
                 seznamVychodu.setItems(vychody);
                 
 		hra.getHerniPlan().addObserver(this);
                 hra.getHerniPlan().notifyObservers();
 	}
         
+	
+	
+	/**
+	 * metoda pro zahození věci z baťohu
+	 */
         @FXML public void klikBatoh() 
         {
                     List<Vec> seznam;
@@ -111,6 +119,11 @@ public class HomeController extends GridPane implements Observer, Initializable 
             }
         }
         
+        
+        
+        /**
+    	 * metoda pro přechod do vedlejší místnosti
+    	 */
         @FXML public void klikMistnost() 
         {
             String nazev = seznamVychodu.getSelectionModel().getSelectedItem().toString();
@@ -121,6 +134,11 @@ public class HomeController extends GridPane implements Observer, Initializable 
             }
         }
         
+        
+        
+        /**
+    	 * metoda pro kliknutí na tlačítko nová hra
+    	 */
         @FXML public void novaHra() 
         {
                 hra = new Hra();
@@ -130,12 +148,21 @@ public class HomeController extends GridPane implements Observer, Initializable 
                 hra.getHerniPlan().notifyObservers();
         }
         
+        
+        
+        /**
+    	 * metoda pro kliknutí na tlačítko konec hry
+    	 */        
         @FXML public void konecHry() 
         {
             vstupniText.setText("konec");
             odesliPrikaz();
         }
         
+        
+        /**
+    	 * metoda pro kliknutí na tlačítko nápověda
+    	 */
          @FXML public void Napoveda() 
         {
             Stage stage = new Stage();
@@ -148,6 +175,13 @@ public class HomeController extends GridPane implements Observer, Initializable 
             stage.show();
         }
         
+         
+         
+         
+         
+         /**
+     	 * metoda pro sebrání věci v místnosti
+     	 */
         @FXML public void klikVecMistnost() 
         {
                     Map<String,Vec> seznam;
@@ -171,11 +205,36 @@ public class HomeController extends GridPane implements Observer, Initializable 
             }
         }
         
+        
+        /**
+     	 * metoda pro mluvení s někým v místnosti
+     	 */
         @FXML public void klikMluv() 
         {
-                 
+        	List<Postava> seznam;
+            seznam = hra.getHerniPlan().getAktualniProstor().getPostavy();
+            int index = seznamLidi.getSelectionModel().getSelectedIndex();
+            
+            String nazev = "";
+            int pomocna = 0;
+            for (Postava postava : seznam) 
+            {
+               if(pomocna == index)
+               {
+                   nazev = postava.getJmeno();
+               }
+               pomocna++;
+            }
+            if(!hra.konecHry())
+            {
+            vstupniText.setText("mluv " + nazev);
+            odesliPrikaz();
+            }
         }
         
+        /**
+     	 * metoda pro použití předmětu v místnosti
+     	 */
         @FXML public void klikPouzij() 
         {
 
@@ -202,6 +261,12 @@ public class HomeController extends GridPane implements Observer, Initializable 
         }
         }
 
+        
+        
+        
+        /**
+     	 * metoda updatování zobrazení a posun po mapě
+     	 */
 	@Override
 	public void update(Observable arg0, Object arg1) 
         {
@@ -211,6 +276,7 @@ public class HomeController extends GridPane implements Observer, Initializable 
                 veciMistnost.clear();
                 veciBatoh.clear();
                 veciPouziti.clear();
+                lidi.clear();
                 vychody.clear();
 		String sVychody = hra.getHerniPlan().getAktualniProstor().seznamVychodu();
                 String[] oddeleneVychody = sVychody.split(" ");
@@ -225,6 +291,24 @@ public class HomeController extends GridPane implements Observer, Initializable 
                     Vec pomocna = vec;
                     ImageView obrazek = new ImageView(new Image(com.github.honzamandik.adventura.main.GuiAdventura.class.getResourceAsStream("/zdroje/"+pomocna.getObrazek()), 100, 100, false, false));
                     veciBatoh.add(obrazek);
+                    
+                    
+                }
+                
+                List<Vec> sPouziti = hra.getHerniPlan().getBatoh().getInventar();
+                for (Vec vec : sPouziti) 
+                {
+                    Vec pomocna = vec;
+                    ImageView obrazek = new ImageView(new Image(com.github.honzamandik.adventura.main.GuiAdventura.class.getResourceAsStream("/zdroje/"+pomocna.getObrazek()), 100, 100, false, false));
+                    veciPouziti.add(obrazek);
+                }
+                
+                List<Postava> sMluveni = hra.getHerniPlan().getAktualniProstor().getPostavy();
+                for (Postava postava : sMluveni) 
+                {
+                    Postava pomocna = postava;
+                    ImageView obrazek = new ImageView(new Image(com.github.honzamandik.adventura.main.GuiAdventura.class.getResourceAsStream("/zdroje/"+pomocna.getObrazek()), 100, 100, false, false));
+                    lidi.add(obrazek);
                 }
                 
                 Map<String,Vec> sVeci = hra.getHerniPlan().getAktualniProstor().getVeci();
@@ -236,13 +320,7 @@ public class HomeController extends GridPane implements Observer, Initializable 
                 }
                 
                 
-                List<Vec> sPouziti = hra.getHerniPlan().getBatoh().getInventar();
-                for (Vec vec : sPouziti) 
-                {
-                    Vec pomocna = vec;
-                    ImageView obrazek = new ImageView(new Image(com.github.honzamandik.adventura.main.GuiAdventura.class.getResourceAsStream("/zdroje/"+pomocna.getObrazek()), 100, 100, false, false));
-                    veciPouziti.add(obrazek);
-                }
+               
                 
                 
 	}

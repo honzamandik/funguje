@@ -290,6 +290,10 @@ public class Prostor {
     public Map<String, Vec> getVeci() {
         return veci;
     }
+    
+    public List<Postava> getPostavy() {
+        return postavy;
+    }
         
         public String seznamVychodu() 
     {
