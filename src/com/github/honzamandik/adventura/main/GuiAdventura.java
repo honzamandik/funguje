@@ -24,7 +24,7 @@ public class GuiAdventura extends Application {
 	
 	 /**
      *  Hlavní metoda hry -text pro textové rozhraní
-     *  
+     *  @param args the command line arguments
      */	
 	public static void main(String[] args) {
     	if (args.length == 0) {

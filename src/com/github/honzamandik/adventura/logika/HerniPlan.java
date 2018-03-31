@@ -160,7 +160,7 @@ public class HerniPlan extends Observable {
     /**
      *  Metoda nastaví aktuální prostor, používá se nejčastěji při přechodu mezi prostory
      *
-     *@param  prostor nový aktuální prostor
+     *@param  prostor nový aktuální prostord
      */
     public void setAktualniProstor(Prostor prostor) {
        aktualniProstor = prostor;
